@@ -11,11 +11,11 @@ def index(request):
 
         Question.object => Question = Django Class// objects = ORM
 
-        Question_list => QuerySet, 리스트와 구조는 같지만 파이썬 기본 자료구조가 아니라 변환을 해야함.
+        Question_list => QuerySet, 리스트와 구조는 같지만 파이썬 기본 자료구조가 아니라 변환을 해야함. 리스트의 안의 타입은 dict
 
     """
     question_list = Question.objects.order_by('-create_date')
-    print(Question.objects.values(),Question.objects.all())
+    print(Question.objects.values()[0].__class__,Question.objects.all())
     context = {'question_list': question_list}
     return render(request, 'pybo/question_list.html', context)
 

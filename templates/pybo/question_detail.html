@@ -1,3 +1,5 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"> <!-- rel - relation 관계 정의, href - hyper reference 하이퍼 참조 -->
 <h1>{{ question.subject }}</h1> <!-- h1 글씨 크기 1~5 작은게 제일 큼  -->
 <div>   <!-- division 문서 분할 엔터키?  -->
     {{ question.content }}
