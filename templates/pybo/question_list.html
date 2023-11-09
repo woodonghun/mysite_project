@@ -1,0 +1,9 @@
+{% if question_list %}
+    <ul> <!-- unordered list 순서가 없는 리스트 -->
+    {% for question in question_list %}
+        <li><a href="{% url 'pybo:detail' question.id %}">{{ question.subject }}</a></li>   <!-- li list item  --> <!-- <a> 앵커 요소 링크 이동  -->
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>질문이 없습니다.</p>
+{% endif %}
