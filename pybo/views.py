@@ -13,14 +13,14 @@ def index(request):
 
         Question_list => QuerySet, 리스트와 구조는 같지만 파이썬 기본 자료구조가 아니라 변환을 해야함. 리스트의 안의 타입은 dict
     """
-    question_list = Question.objects.order_by('-create_date')  # info 중요함
-    print(Question.objects.values()[0].__class__, Question.objects.all())
+    question_list = Question.objects.order_by('-create_date')  # info 중요함 object 와 출력의 기능을 잊지 말것
+    print(Question.objects.values()[0].__class__, Question.objects.all(), question_list)
     context = {'question_list': question_list}
     return render(request, 'pybo/question_list.html', context)
 
 
 def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)  # 없는 데이터를 요청 할 경우 500 페이지 대신 404 페이지를 출력.
+    question = get_object_or_404(Question, pk=question_id)  # 없는 데이터를 요청 할 경우 500 페이지 대신 404 페이지를 출력. pk => primary key
     context = {'question': question}
     return render(request, 'pybo/question_detail.html', context)
 

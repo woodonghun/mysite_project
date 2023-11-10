@@ -2,9 +2,11 @@
  <!-- li list item  --> <!-- <a> 앵커 요소 링크 이동  -->
  <!-- h1 글씨 크기 1~5 작은게 제일 큼  -->
  <!-- 클래스에 대한 각종 데이터는 점프 투 장고 참고  -->
-
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+ <!-- https://miaow-miaow.tistory.com/48 form 에 대한 설명 -->
+{% extends 'base.html' %}
+{% block content %}
+ <!--{% load static %}-->
+<!--<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">-->
 <div class="container my-3">
     <!-- 질문 -->
     <h2 class="border-bottom py-2">{{ question.subject }}</h2>
@@ -42,3 +44,4 @@
         <input type="submit" value="답변등록" class="btn btn-primary">
     </form>
 </div>
+{% endblock %}

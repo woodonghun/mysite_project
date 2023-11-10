@@ -1,5 +1,5 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}"> <!-- rel - relation 관계 정의, href - hyper reference 하이퍼 참조 -->
+{% extends 'base.html' %}
+{% block content %}
 <div class="container my-3">    <!-- class 는 부트스트랩에 정의되어 있는 클래스--> <!-- division 문서 분할 엔터키?  -->
     <table class="table">
         <thead> <!-- table head -->
@@ -28,3 +28,4 @@
         </tbody>
     </table>
 </div>
+{% endblock %}

@@ -53,10 +53,3 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
-
-    def __str__(self):
-        """
-            메서드만 추가될 경우 makemigrations 와 migrate 를 수행 할 필요가 없음. => 모델의 속성이 변경했을때만 수행.
-            __str__ => id 값 대신 제목을 표시할 수 있음
-        """
-        return self.question
