@@ -7,5 +7,6 @@ app_name = 'pybo'   # pybo 앱 이외의 다른 앱이 프로젝트에 추가 �
 urlpatterns = [
     path('', views.index, name='index'),    # url 하드코딩을 해결하기 위한 별칭 부여
     path('<int:question_id>/', views.detail, name='detail'),
-    path('answer/create/<int:question_id>/', views.answer_create, name='answer_create')
+    path('answer/create/<int:question_id>/', views.answer_create, name='answer_create'),
+    path('question/create/', views.question_create, name='question_create'),
 ]

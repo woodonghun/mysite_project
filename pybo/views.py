@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.http import HttpResponseNotAllowed
 from .models import Question, Answer
+from .forms import QuestionForm, AnswerForm
 
 
 def index(request):
@@ -14,7 +16,7 @@ def index(request):
         Question_list => QuerySet, 리스트와 구조는 같지만 파이썬 기본 자료구조가 아니라 변환을 해야함. 리스트의 안의 타입은 dict
     """
     question_list = Question.objects.order_by('-create_date')  # info 중요함 object 와 출력의 기능을 잊지 말것
-    print(Question.objects.values()[0].__class__, Question.objects.all(), question_list)
+    # print(Question.objects.values()[0].__class__, Question.objects.all(), question_list)
     context = {'question_list': question_list}
     return render(request, 'pybo/question_list.html', context)
 
@@ -28,9 +30,34 @@ def detail(request, question_id):
 def answer_create(request, question_id):
     """아래의 answer_create 와 동일한 기능 수행"""
     question = get_object_or_404(Question, pk=question_id)
-    answer = Answer(question=question, content=request.POST.get('content'), create_date=timezone.now())
-    answer.save()
-    return redirect('pybo:detail', question_id=question.id)
+    if request.method == "POST":
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.create_date = timezone.now()
+            answer.question = question
+            answer.save()
+            return redirect('pybo:detail', question_id=question.id)
+    else:
+        return HttpResponseNotAllowed('Only POST is possible.')
+    context = {'question': question, 'form': form}
+    return render(request, 'pybo/question_detail.html', context)
+
+
+def question_create(request):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():  # 폼이 유효하다면
+            """ form.save() 로만 할 경우 form 에는 create_date 의 값이 없어서 오류가 남."""
+            question = form.save(commit=False)  # 임시 저장하여 question 객체를 리턴받는다. // commit=False 데이터베이스에 저장 안함.
+            question.create_date = timezone.now()  # 실제 저장을 위해 작성일시를 설정한다.
+            question.save()  # 데이터를 실제로 저장한다.
+            return redirect('pybo:index')
+    else:
+        form = QuestionForm()
+    context = {'form': form}
+
+    return render(request, 'pybo/question_form.html', context)
 
 # def answer_create(request, question_id):
 #     question = get_object_or_404(Question, pk=question_id)
