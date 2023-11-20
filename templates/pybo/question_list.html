@@ -3,7 +3,7 @@
 <div class="container my-3">    <!-- class 는 부트스트랩에 정의되어 있는 클래스--> <!-- division 문서 분할 엔터키?  -->
     <table class="table">
         <thead> <!-- table head -->
-        <tr class="table-dark"> <!-- tr = table row -->
+        <tr class="table-dark"> <!-- 'tr' = table row -->
             <th>번호</th>     <!-- th table header 테이블 타이틀-->
             <th>제목</th>
             <th>작성일시</th>
@@ -27,6 +27,49 @@
         {% endif %}
         </tbody>
     </table>
+    <!-- 페이징 처리 시작 -->
+    <ul class="pagination justify-content-center"> <!-- unordered list 순서가 없는 리스트-->
+
+        <!-- 이전 페이지 -->
+        {% if question_list.has_previous %} <!-- 이전 페이지가 있는지 체크 // 있으면 활성화 없으면 비활성화-->
+            <li class="page-item">  <!-- list item -->
+                <a class="page-link" href="?page={{ question_list.previous_page_number }}">이전</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+            </li>
+        {% endif %}
+
+        <!-- 페이지 리스트 -->
+        {% for page_number in question_list.paginator.page_range %} <!-- 페이지 리스트 루프 ( 해당 페이지로 이동할 수 있는 링크 생성 )-->
+            {% if page_number >= question_list.number|add:-5 and page_number <= question_list.number|add:5 %} <!-- add:-5는 5만큼 빼라는 의미 즉 page_number가 1이고-->
+                {% if page_number == question_list.number %}    <!-- 강조 표시 -->
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        <!-- 다음 페이지 -->
+        {% if question_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ question_list.next_page_number }}">다음</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+            </li>
+        {% endif %}
+
+    </ul>
+    <!-- 페이징처리 끝 -->
+
     <a href="{% url 'pybo:question_create' %}" class="btn btn-primary">질문 등록하기</a>
 </div>
 {% endblock %}
