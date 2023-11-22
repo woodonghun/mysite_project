@@ -25,7 +25,7 @@ def index(request):
     print(len(question_list))
     print(type(paginator))
     page_obj = paginator.get_page(page)  # 데이터 전체를 조회하지 않고 해당 페이지의 데이터만 조회하게 됨.
-    print(paginator.count, paginator.num_pages, paginator.page_range, type(page_obj))
+    print(paginator.count, paginator.num_pages, paginator.page_range, page_obj)
     context = {'question_list': page_obj}
     return render(request, 'pybo/question_list.html', context)
 
