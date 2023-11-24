@@ -1,21 +1,28 @@
-import os
+hi = 1
+def change_name(a):
+    a = 'how are you'
+    return a
+class MyClass:
+    global hello
+    hello = 'hello'
+    hello = change_name(hello)
 
-train_list = os.listdir(r'D:\Volume_Template\ON3DS_VT_dataset\train&valid_set\train_set\input')
-valid_list = os.listdir(r'D:\Volume_Template\ON3DS_VT_dataset\train&valid_set\valid_set\input')
-test_list = os.listdir(r'D:\Volume_Template\ON3DS_VT_dataset\test_set\difficult_test_set\input')
-df_test_list = os.listdir(r'D:\Volume_Template\ON3DS_VT_dataset\test_set\normal_test_set\input')
 
-print(len(train_list), len(valid_list), len(test_list), len(df_test_list))
+    def modify_global_var(self):
+        global global_var
+        global_var =10
+        print(global_var)
 
-all = train_list+valid_list+test_list+df_test_list
-print(len(all))
-with open(r'D:\Volume_Template\123.txt','r') as f:
-    data = f.readlines()
-    data_change = []
-    for i in data:
-        data_change.append(i.replace('\n',''))
+    @classmethod
+    def change_hello(cls):
+        global hello, hi
+        hello = 'me'
+        hi = 2
 
-    print(data_change)
-    for j in all:
-        if str(j) not in data_change:
-            print(j)
+obj = MyClass()
+obj.modify_global_var()  # 출력: 15
+MyClass.change_hello()
+print(global_var,hello, hi)
+
+if __name__=='__main__':
+    print(hi)
