@@ -4,6 +4,7 @@ from django.http import HttpResponseNotAllowed
 from .models import Question
 from .forms import QuestionForm, AnswerForm
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -21,7 +22,7 @@ def index(request):
     question_list = Question.objects.order_by('-create_date')  # info 중요함 object 와 출력의 기능을 잊지 말것
     # print(Question.objects.values()[0].__class__, Question.objects.all(), question_list)
 
-    paginator = Paginator(question_list, 10)    # 페이지당 10개씩 보여주기
+    paginator = Paginator(question_list, 10)  # 페이지당 10개씩 보여주기
     print(len(question_list))
     print(type(paginator))
     page_obj = paginator.get_page(page)  # 데이터 전체를 조회하지 않고 해당 페이지의 데이터만 조회하게 됨.
@@ -36,6 +37,7 @@ def detail(request, question_id):
     return render(request, 'pybo/question_detail.html', context)
 
 
+@login_required(login_url='common:login')   # @login_required 데코레이터 // login url 지정 // 로그아웃 상태에서 질문/답변을 등록하면 자동으로 로그인 화면으로 이동함.
 def answer_create(request, question_id):
     """아래의 answer_create 와 동일한 기능 수행"""
     question = get_object_or_404(Question, pk=question_id)
@@ -43,22 +45,25 @@ def answer_create(request, question_id):
         form = AnswerForm(request.POST)
         if form.is_valid():
             answer = form.save(commit=False)
+            answer.author = request.user  # author 속성에 로그인 계정 저장 => 로그인이 필요한 함수인 것을 알 수 있음. 위의 어노테이션과 묶음이라 생각하면 될듯.
             answer.create_date = timezone.now()
             answer.question = question
             answer.save()
             return redirect('pybo:detail', question_id=question.id)
     else:
-        return HttpResponseNotAllowed('Only POST is possible.')
+        form = AnswerForm()
     context = {'question': question, 'form': form}
     return render(request, 'pybo/question_detail.html', context)
 
 
+@login_required(login_url='common:login')   # 로그아웃 상태에서 질문/답변을 등록하면 자동으로 로그인 화면으로 이동함. // 강제로 로그인 하게함
 def question_create(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         if form.is_valid():  # 폼이 유효하다면
             # """ form.save() 로만 할 경우 form 에는 create_date 의 값이 없어서 오류가 남."""
             question = form.save(commit=False)  # 임시 저장하여 question 객체를 리턴. // commit=False 데이터베이스에 저장 안함.
+            question.author = request.user  # author 속성에 로그인 계정 저장
             question.create_date = timezone.now()  # 실제 저장을 위해 작성 일시를 설정.
             question.save()  # 데이터를 실제로 저장.
             return redirect('pybo:index')

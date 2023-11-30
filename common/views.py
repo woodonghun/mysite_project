@@ -14,8 +14,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
 
             # authenticate => database 에 접근.
-            user = authenticate(username=username, password=123)  # 사용자 인증 ( 사용자 명과 비밀번호가 정확한지 검증 ) 성공하면 객체 반환, 실패 None
-            print(f'user:{user},{type(user)}')
+            user = authenticate(username=username, password=raw_password)  # 사용자 인증 ( 사용자 명과 비밀번호가 정확한지 검증 ) 성공하면 객체 반환, 실패 None
             login(request, user)  # 로그인 (사용자 세션을 생성 ) => 데이터베이스나 캐시등에 저장되어 로그인 상태 유지함
 
             return redirect('pybo:index')

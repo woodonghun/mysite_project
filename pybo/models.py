@@ -34,9 +34,11 @@
 
 """
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Question(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)  # User 모델 불러와 회원 가입시 데이터 저장한 계정이 삭제되면 이 계정이 작정한 질문들을 모두 삭제
     subject = models.CharField(max_length=200)
     content = models.TextField()
     create_date = models.DateTimeField()
@@ -50,6 +52,7 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()

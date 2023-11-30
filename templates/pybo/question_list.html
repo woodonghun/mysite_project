@@ -4,32 +4,34 @@
 <div class="container my-3">    <!-- class 는 부트스트랩에 정의되어 있는 클래스--> <!-- division 문서 분할 엔터키?  -->
     <table class="table">
         <thead> <!-- table head -->
-        <tr class="table-dark"> <!-- 'tr' = table row -->
-            <th>번호</th>     <!-- th table header 테이블 타이틀-->
-            <th>제목</th>
+        <tr class="text-center table-dark">
+            <th>번호</th>
+            <th style="width:50%">제목</th>   <!-- 제목 너비가 전체의 50% -->
+            <th>글쓴이</th>
             <th>작성일시</th>
         </tr>
         </thead>
         <tbody>
         {% if question_list %}
         {% for question in question_list %}
-        <tr>
+        <tr class="text-center">    <!-- 가운데 정렬 -->
             <td>
                 <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
                 {{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}
             </td>
-            <td>
+            <td class="text-start">     <!-- 왼쪽 정렬 -->
                 <a href="{% url 'pybo:detail' question.id %}">{{ question.subject }}</a>
                 {% if question.answer_set.count > 0 %}
                 <span class="text-danger small mx-2">{{ question.answer_set.count }}</span>
                 {% endif %}
             </td>
+            <td>{{ question.author.username }}</td>     <!-- 글쓴이 추가 -->
             <td>{{ question.create_date }}</td>
         </tr>
         {% endfor %}
         {% else %}
         <tr>
-            <td colspan="3">질문이 없습니다.</td>
+            <td colspan="4">질문이 없습니다.</td>      <!-- colspan 테이블 항목 4개 -->
         </tr>
         {% endif %}
         </tbody>
