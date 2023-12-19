@@ -56,3 +56,13 @@ def answer_modify(request, answer_id):
         form = AnswerForm(instance=answer)
     context = {'answer': answer, 'form': form}
     return render(request, 'pybo/answer_form.html', context)
+
+
+@login_required(login_url='common:login')
+def answer_vote(request, answer_id):
+    answer = get_object_or_404(Answer, pk=answer_id)
+    if request.user == answer.author:
+        messages.error(request, '본인이 작성한 글은 추천할수 없습니다')
+    else:
+        answer.voter.add(request.user)
+    return redirect('pybo:detail', question_id=answer.question.id)
