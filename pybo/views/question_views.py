@@ -52,7 +52,7 @@ def question_modify(request, question_id):
         if form.is_valid():
             question = form.save(commit=False)  # commit=False => database 에 저장하지 않음 => modify_date를 같이 저장하기 위해서?
             question.modify_date = timezone.now()
-            question.save()
+            question.save()  # 데이터를 실제로 저장.
             return redirect('pybo:detail', question_id=question.id)
     else:
         form = QuestionForm(instance=question)

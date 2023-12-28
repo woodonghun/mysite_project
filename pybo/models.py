@@ -45,17 +45,17 @@ class Question(models.Model):
         직접 하나씩 지우는 경우는 정확하게 지우기 어렵다.(model.delete()). 언제 어디서 지운지 로그를 남길순 있지만 만약 100개가 넘는 곳에서 지우거나,
         하나씩 지우게 되면 데이터베이스의 통신간 부하가 일어나고, 지워야 할곳에서 코딩실수로 인해 지우지 않고 넘어가 오류가 발생할 수 있다.
     """
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_question')  # User 모델 불러와 회원 가입시 데이터 저장한 계정이 삭제되면 이 계정이 작정한 질문들을 모두 삭제
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_question')
 
     # null=True 는 데이터베이스에서 modify_date 칼럼에 null 을 허용한다는 의미이며,
     # blank=True 는 form.is_valid()를 통한 입력 데이터 검증 시 값이 없어도 된다는 의미
-    # json 으로 사용하면 form 은 사용하지 않을텐데 검증은 어떻게?
+    # json 으로 사용하면 보안에 영향이 끼치는 것만 form 사용하게됨.
     modify_date = models.DateTimeField(null=True, blank=True)  # 수정된 시간.
     subject = models.CharField(max_length=200)
     content = models.TextField()
     create_date = models.DateTimeField()
     voter = models.ManyToManyField(User, related_name='voter_question')  # 추천인 추가
-
+    file = models.FileField(upload_to='media/%Y/%m/%d/', null=True, blank=True)  # 파일 저장 경로 설정
     """
         하나의 모델이 특정 모델의 변수에 2개 이상 연관되어 있으면, 하나의 모델이 특정 모델에 접근할 때 2개의 변수중 어떤것에 접근할지 알수가 없어서, related_name 으로 이름을 지정
     
