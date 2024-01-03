@@ -18,6 +18,8 @@ urlpatterns = [
          question_views.question_delete, name='question_delete'),
     path('question/vote/<int:question_id>/',
          question_views.question_vote, name='question_vote'),
+    path('question/download/<int:question_id>/',
+         question_views.question_file_download, name='question_file_download'),
 
     # answer_views.py
     path('answer/create/<int:question_id>/',

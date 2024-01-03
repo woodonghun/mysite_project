@@ -5,10 +5,12 @@ from pybo.models import Question, Answer, Comment
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question  # 사용할 모델
-        fields = ['subject', 'content']  # QuestionForm 에서 사용할 Question 모델의 속성
+        fields = ['subject', 'content', 'file', 'filename']  # QuestionForm 에서 사용할 Question 모델의 속성
         labels = {
             'subject': '제목',
             'content': '내용',
+            'file': '파일',
+            'filename': '파일이름'
         }
 
 

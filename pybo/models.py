@@ -35,8 +35,19 @@
     todo makemigrations 와 migrate 는 결국 database 에 model 을 적용하는 것을 의미
     todo makemigrations : migrations 코드 생성, migrate : migrations 코드를 데이터베이스에 적용
 """
+import os
+
 from django.db import models
 from django.contrib.auth.models import User
+from uuid import uuid4
+from datetime import datetime
+from config import settings
+
+
+def get_file_path(instance, filename):
+    ymd_path = datetime.now().strftime('%Y/%m/%d')
+    # uuid_name = uuid4().hex  # 암호화  => 랜덤한 uuid( 범용 고유 식별자) 생성, hex 로 16진수 문자열로 변환
+    return '/'.join(['upload_file/', ymd_path, filename])  # uuid_name 을 단순히 filename 으로 변경하면 filename 으로 저장이 가능하다.
 
 
 class Question(models.Model):
@@ -55,7 +66,9 @@ class Question(models.Model):
     content = models.TextField()
     create_date = models.DateTimeField()
     voter = models.ManyToManyField(User, related_name='voter_question')  # 추천인 추가
-    file = models.FileField(upload_to='media/%Y/%m/%d/', null=True, blank=True)  # 파일 저장 경로 설정
+    file = models.FileField(upload_to=get_file_path, null=True, blank=True)  # 파일 저장 경로 설정
+    filename = models.CharField(max_length=64, null=True, blank=True)
+
     """
         하나의 모델이 특정 모델의 변수에 2개 이상 연관되어 있으면, 하나의 모델이 특정 모델에 접근할 때 2개의 변수중 어떤것에 접근할지 알수가 없어서, related_name 으로 이름을 지정
     
@@ -73,6 +86,11 @@ class Question(models.Model):
         주로사용하는곳 : 태그, 사용자 간의 관계, 추천, 장바구니(쇼핑)
     """
 
+    def delete(self, *args, **kargs):   # 질문 자체를 삭제할 때 파일도 같이 삭제하도록 함.
+        if self.file:
+            os.remove(os.path.join(settings.MEDIA_ROOT, self.file.path))
+        super(Question, self).delete(*args, **kargs)
+
     def __str__(self):
         """
             메서드만 추가될 경우 makemigrations 와 migrate 를 수행 할 필요가 없음. => 모델의 속성이 변경했을때만 수행.
@@ -84,17 +102,17 @@ class Question(models.Model):
 
 class Answer(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_answer')
-    modify_date = models.DateTimeField(null=True, blank=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
+    modify_date = models.DateTimeField(null=True, blank=True)
     voter = models.ManyToManyField(User, related_name='voter_answer')
 
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, null=True, blank=True, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
-    question = models.ForeignKey(Question, null=True, blank=True, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, null=True, blank=True, on_delete=models.CASCADE)

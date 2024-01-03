@@ -34,7 +34,12 @@
                     <div>{{ question.create_date }}</div>
                 </div>
             </div>
-
+            {% if question.file %}
+                <div class="col-12 text-right">
+                    <span>첨부파일 :&nbsp;</span>
+                    <a href="{% url 'pybo:question_file_download' question.id %}" >{{ question.filename|truncatechars:25 }}</a> <!-- truncatechars 문자열 길이 설정-->
+                </div>
+            {% endif %}
             <!-- 질문 수정 삭제 -->
             <div class="my-3">
                 <a href="javascript:void(0)" data-uri="{% url 'pybo:question_vote' question.id  %}" class="recommend btn btn-sm btn-outline-secondary"> 추천
